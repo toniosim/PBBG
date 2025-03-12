@@ -1,0 +1,194 @@
+<!-- Prevent Jinja2 from interpreting Vue syntax -->
+{% raw %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game - Browser Based Game</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/game.css">
+    <!-- Add Vue.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- Add Socket.IO client library -->
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+</head>
+<body>
+    <div id="app" class="game-container">
+        <header class="game-header">
+            <div class="game-title">Browser Game</div>
+            <div class="user-controls">
+                <span id="player-name">{{ character.name || 'Loading...' }}</span>
+                <a href="/logout" class="logout-btn">Logout</a>
+            </div>
+        </header>
+        
+        <main class="game-content">
+            <div class="left-panel">
+                <!-- Character Card -->
+                <div class="card character-card">
+                    <div class="card-header">
+                        <h2>Character</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3>{{ character.name }}</h3>
+                        <div class="stat-bar">
+                            <label>Health:</label>
+                            <div class="progress-container">
+                                <div class="progress-bar health-bar" :style="{ width: healthPercent + '%' }"></div>
+                                <span>{{ character.health }}/{{ character.max_health }}</span>
+                            </div>
+                        </div>
+                        <div class="stat-bar">
+                            <label>MP:</label>
+                            <div class="progress-container">
+                                <div class="progress-bar mp-bar" :style="{ width: mpPercent + '%' }"></div>
+                                <span>{{ character.mp }}/{{ character.max_mp }}</span>
+                            </div>
+                        </div>
+                        <div class="stat-bar">
+                            <label>AP:</label>
+                            <div class="progress-container">
+                                <div class="progress-bar ap-bar" :style="{ width: apPercent + '%' }"></div>
+                                <span>{{ character.ap }}/{{ character.max_ap }}</span>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <label>Experience:</label>
+                            <span>{{ character.experience }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Location Card -->
+                <div class="card location-card">
+                    <div class="card-header">
+                        <h2>Location</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3>{{ location.name || 'Unknown' }}</h3>
+                        <p>{{ location.description || 'Loading location information...' }}</p>
+                        <div v-if="location.inside_building" class="building-info">
+                            <div class="building-indicator">Inside Building</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions Card -->
+                <div class="card actions-card">
+                    <div class="card-header">
+                        <h2>Actions</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="actions-container">
+                            <button 
+                                v-for="action in availableActions" 
+                                :key="action.type"
+                                class="action-button"
+                                :disabled="!canPerformAction(action.type)"
+                                @click="handleAction(action)"
+                            >
+                                {{ action.name }}
+                            </button>
+                            <p v-if="availableActions.length === 0">Loading available actions...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <!-- Map Card -->
+                <div class="card map-card">
+                    <div class="card-header">
+                        <h2>Map</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="game-map">
+                            <div 
+                                v-for="(tile, index) in mapTiles" 
+                                :key="index"
+                                class="map-tile"
+                                :class="{ current: tile.x === currentX && tile.y === currentY }"
+                                @click="tileClick(tile)"
+                            >
+                                <div class="map-tile-name">({{ tile.x }}, {{ tile.y }})</div>
+                                <div v-if="tile.has_building" class="building-marker"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Log Card -->
+                <div class="card log-card">
+                    <div class="card-header">
+                        <h2>Action Log</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="log-container">
+                            <div v-for="(log, index) in logs" :key="index" class="log-entry">
+                                <span class="log-time">{{ formatLogTime(log.created_at) }}</span>
+                                <span class="log-message">{{ log.message }}</span>
+                            </div>
+                            <p v-if="logs.length === 0">Welcome to the game!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Modal for action confirmation/options -->
+        <div class="modal" :class="{ show: showModal }">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>{{ modalTitle }}</h2>
+                    <span class="close-modal" @click="hideModal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <!-- Move Direction Buttons -->
+                    <div v-if="modalActionType === 'MOVE'" class="directions-container">
+                        <button 
+                            v-for="option in modalOptions" 
+                            :key="option.value" 
+                            class="btn-direction"
+                            @click="performAction(modalActionType, { direction: option.value })"
+                        >
+                            {{ option.label }}
+                        </button>
+                    </div>
+                    
+                    <!-- Other action options -->
+                    <select v-else-if="modalOptions.length > 0" v-model="selectedOption">
+                        <option 
+                            v-for="option in modalOptions" 
+                            :key="option.value" 
+                            :value="option.value"
+                        >
+                            {{ option.label }}
+                        </option>
+                    </select>
+                    
+                    <!-- Confirmation message -->
+                    <p v-else>Are you sure you want to {{ modalAction.toLowerCase() }}?</p>
+                </div>
+                <div class="modal-footer">
+                    <button 
+                        v-if="modalOptions.length === 0 || (modalOptions.length > 0 && modalActionType !== 'MOVE')"
+                        class="btn-primary" 
+                        @click="confirmAction"
+                    >
+                        Confirm
+                    </button>
+                    <button class="btn-secondary" @click="hideModal">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Toast message -->
+        <div v-if="showToast" class="toast" :class="toastType">
+            {{ toastMessage }}
+        </div>
+    </div>
+    
+    <script src="/static/js/vue-game.js"></script>
+</body>
+</html>
+{% endraw %}
