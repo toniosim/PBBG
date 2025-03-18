@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for
 from flask_cors import CORS
-import sqlite3
 import json
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -82,12 +81,15 @@ def signup():
         return jsonify({'success': False, 'message': 'Username already exists'}), 400
 
     password_hash = generate_password_hash(password)
-    user_id = create_user(username, password_hash, character_name)
+    try:
+        user_id = create_user(username, password_hash, character_name)
 
-    session.permanent = True
-    session['user_id'] = user_id
+        session.permanent = True
+        session['user_id'] = user_id
 
-    return jsonify({'success': True, 'redirect': '/game'})
+        return jsonify({'success': True, 'redirect': '/game'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 
 @app.route('/logout')
