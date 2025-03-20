@@ -7,19 +7,30 @@
     <title>Game - Browser Based Game</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Theme Overrides -->
+    <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/css/custom.css">
     <!-- Add Vue.js from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- Add Vuex from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vuex@3.6.2/dist/vuex.min.js"></script>
     <!-- Add Socket.IO client library -->
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
 </head>
 <body>
     <div id="app" class="game-container">
         <header class="game-header d-flex justify-content-between align-items-center">
-            <div class="fs-4 fw-bold">Browser Game</div>
             <div class="d-flex align-items-center">
-                <span id="player-name" class="me-3">{{ character.name || 'Loading...' }}</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" class="me-2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2"/>
+                    <path d="M12 8V16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M8 12H16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div class="fs-5 fw-medium">Browser Game</div>
+            </div>
+            <div class="d-flex align-items-center">
+                <span id="player-name" class="me-3 fs-7 fw-medium">{{ character.name || 'Loading...' }}</span>
                 <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
             </div>
         </header>
@@ -29,17 +40,21 @@
                 <div class="col-md-6 d-flex flex-column mb-3 mb-md-0">
                     <!-- Character Card -->
                     <div class="card shadow-sm mb-3">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Character</h5>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M19.4 15C19.1277 15.6172 19.2583 16.3318 19.73 16.82L19.79 16.88C20.1656 17.2554 20.3766 17.7644 20.3766 18.295C20.3766 18.8256 20.1656 19.3346 19.79 19.71C19.4146 20.0856 18.9056 20.2966 18.375 20.2966C17.8444 20.2966 17.3354 20.0856 16.96 19.71L16.9 19.65C16.4118 19.1783 15.6972 19.0477 15.08 19.32C14.4785 19.5791 14.0952 20.1724 14.1 20.82V21C14.1 21.5304 13.8893 22.0391 13.5142 22.4142C13.1391 22.7893 12.6304 23 12.1 23C11.5695 23 11.0608 22.7893 10.6857 22.4142C10.3106 22.0391 10.1 21.5304 10.1 21V20.91C10.0913 20.237 9.66613 19.6292 9.02997 19.38C8.41275 19.1077 7.69816 19.2383 7.20997 19.71L7.14997 19.77C6.77452 20.1456 6.26559 20.3566 5.73497 20.3566C5.20436 20.3566 4.69543 20.1456 4.31997 19.77C3.94436 19.3946 3.73335 18.8856 3.73335 18.355C3.73335 17.8244 3.94436 17.3154 4.31997 16.94L4.37997 16.88C4.85168 16.3918 4.98231 15.6772 4.70997 15.06C4.45094 14.4585 3.85761 14.0752 3.20997 14.08H2.99997C2.46953 14.08 1.96086 13.8693 1.58579 13.4942C1.21071 13.1191 1 12.6105 1 12.08C1 11.5496 1.21071 11.0409 1.58579 10.6658C1.96086 10.2907 2.46953 10.08 2.99997 10.08H3.08997C3.76297 10.0713 4.37077 9.64613 4.61997 9.00997C4.89231 8.39275 4.76168 7.67816 4.28997 7.18997L4.22997 7.12997C3.85436 6.75452 3.64335 6.24559 3.64335 5.71497C3.64335 5.18436 3.85436 4.67543 4.22997 4.29997C4.60543 3.92436 5.11436 3.71335 5.64497 3.71335C6.17559 3.71335 6.68452 3.92436 7.05997 4.29997L7.11997 4.35997C7.60816 4.83168 8.32275 4.96231 8.93997 4.68997H8.99997C9.60146 4.43094 9.98474 3.83761 9.97997 3.18997V2.99997C9.97997 2.46953 10.1907 1.96086 10.5657 1.58579C10.9408 1.21071 11.4495 1 11.98 1C12.5104 1 13.0191 1.21071 13.3941 1.58579C13.7692 1.96086 13.98 2.46953 13.98 2.99997V3.08997C13.9847 3.73761 14.368 4.33094 14.97 4.58997C15.5872 4.86231 16.3018 4.73168 16.79 4.25997L16.85 4.19997C17.2254 3.82436 17.7344 3.61335 18.265 3.61335C18.7956 3.61335 19.3046 3.82436 19.68 4.19997C20.0556 4.57543 20.2666 5.08436 20.2666 5.61497C20.2666 6.14559 20.0556 6.65452 19.68 7.02997L19.62 7.08997C19.1483 7.57816 19.0177 8.29275 19.29 8.90997V8.96997C19.5491 9.57146 20.1424 9.95474 20.79 9.94997H21C21.5304 9.94997 22.0391 10.1607 22.4142 10.5358C22.7893 10.9108 23 11.4195 23 11.95C23 12.4804 22.7893 12.9891 22.4142 13.3642C22.0391 13.7392 21.5304 13.95 21 13.95H20.91C20.2624 13.9547 19.6691 14.338 19.41 14.94L19.4 15Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ character.name }}</h5>
                             <div class="mb-3">
                                 <label class="form-label d-flex justify-content-between">
-                                    <span>Health:</span>
-                                    <span>{{ character.health }}/{{ character.max_health }}</span>
+                                    <span class="fw-medium text-secondary fs-7">Health</span>
+                                    <span class="fs-7">{{ character.health }}/{{ character.max_health }}</span>
                                 </label>
-                                <div class="progress">
+                                <div class="progress" style="height: 0.5rem;">
                                     <div class="progress-bar health-bar" role="progressbar"
                                          :style="{ width: healthPercent + '%' }"
                                          :aria-valuenow="character.health"
@@ -49,10 +64,10 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label d-flex justify-content-between">
-                                    <span>MP:</span>
-                                    <span>{{ character.mp }}/{{ character.max_mp }}</span>
+                                    <span class="fw-medium text-secondary fs-7">MP</span>
+                                    <span class="fs-7">{{ character.mp }}/{{ character.max_mp }}</span>
                                 </label>
-                                <div class="progress">
+                                <div class="progress" style="height: 0.5rem;">
                                     <div class="progress-bar mp-bar" role="progressbar"
                                          :style="{ width: mpPercent + '%' }"
                                          :aria-valuenow="character.mp"
@@ -62,10 +77,10 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label d-flex justify-content-between">
-                                    <span>AP:</span>
-                                    <span>{{ character.ap }}/{{ character.max_ap }}</span>
+                                    <span class="fw-medium text-secondary fs-7">AP</span>
+                                    <span class="fs-7">{{ character.ap }}/{{ character.max_ap }}</span>
                                 </label>
-                                <div class="progress">
+                                <div class="progress" style="height: 0.5rem;">
                                     <div class="progress-bar ap-bar" role="progressbar"
                                          :style="{ width: apPercent + '%' }"
                                          :aria-valuenow="character.ap"
@@ -74,7 +89,7 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between">
-                                <span class="fw-medium">Experience:</span>
+                                <span class="fw-medium text-secondary">Experience</span>
                                 <span>{{ character.experience }}</span>
                             </div>
                         </div>
@@ -82,8 +97,12 @@
 
                     <!-- Location Card -->
                     <div class="card shadow-sm mb-3">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Location</h5>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 22C16 18 20 14.4183 20 10C20 5.58172 16.4183 2 12 2C7.58172 2 4 5.58172 4 10C4 14.4183 8 18 12 22Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">{{ location.name || 'Unknown' }}</h5>
@@ -96,8 +115,11 @@
 
                     <!-- Actions Card -->
                     <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Actions</h5>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 11L12 14L15 11M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
                         <div class="card-body">
                             <div class="d-grid gap-2">
@@ -119,8 +141,11 @@
                 <div class="col-md-6 d-flex flex-column">
                     <!-- Map Card -->
                     <div class="card shadow-sm mb-3">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Map</h5>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 20L3.55279 17.2764C3.214 17.107 3 16.7607 3 16.382V5.61803C3 4.87465 3.78231 4.39116 4.44721 4.72361L9 7M9 20L15 17M9 20V7M15 17L19.5528 19.2764C20.2177 19.6088 21 19.1253 21 18.382V7.61803C21 7.23926 20.786 6.893 20.4472 6.72361L15 4M15 17V4M15 4L9 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
                         </div>
                         <div class="card-body">
                             <div class="game-map">
@@ -140,8 +165,11 @@
 
                     <!-- Log Card -->
                     <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Action Log</h5>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5M12 12H15M12 16H15M9 12H9.01M9 16H9.01" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
                         </div>
                         <div class="card-body">
                             <div class="log-container">
@@ -211,12 +239,22 @@
 
         <!-- Toast message -->
         <div v-if="showToast" class="toast" :class="toastType">
-            {{ toastMessage }}
+            <div class="d-flex align-items-center">
+                <!-- Add an icon based on the toast type -->
+                <svg v-if="toastType === 'success'" width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-2" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3.00001 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg v-if="toastType === 'error'" width="16" height="16" viewBox="0 0 24 24" fill="none" class="me-2" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3.00001 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ toastMessage }}
+            </div>
         </div>
     </div>
 
     <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Updated script reference -->
     <script src="/static/js/vuex-game.js"></script>
 </body>
 </html>
