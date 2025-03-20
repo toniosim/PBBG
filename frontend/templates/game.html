@@ -7,14 +7,11 @@
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/game.css">
 
-    <!-- Vue 3 -->
-    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.js"></script>
+    <!-- Load Vue first - using a stable version -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31"></script>
 
-    <!-- VueDemi (required for Pinia) -->
-    <script src="https://unpkg.com/vue-demi@0.13.11/lib/index.iife.js"></script>
-
-    <!-- Pinia with correct version -->
-    <script src="https://unpkg.com/pinia@2.0.33/dist/pinia.iife.js"></script>
+    <!-- Load Vue Router (since we're going for a simpler approach) -->
+    <script src="https://cdn.jsdelivr.net/npm/vuex@4.0.2/dist/vuex.global.js"></script>
 
     <!-- Socket.IO client library -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
@@ -22,11 +19,7 @@
 <body>
     <div id="app">
         <!-- The app will be mounted here -->
-    </div>
-
-    <!-- App Template -->
-    <script type="text/x-template" id="game-template">
-        <div class="game-container">
+        <div class="game-container" v-if="loaded">
             <header class="game-header">
                 <div class="game-title">Browser Game</div>
                 <div class="user-controls">
@@ -120,7 +113,7 @@
                                     v-for="(tile, index) in mapTiles"
                                     :key="index"
                                     class="map-tile"
-                                    :class="{ current: tile.x === currentX && tile.y === currentY }"
+                                    :class="{ current: tile.x === character.x && tile.y === character.y }"
                                     @click="tileClick(tile)"
                                 >
                                     <div class="map-tile-name">({{ tile.x }}, {{ tile.y }})</div>
@@ -200,10 +193,14 @@
                 {{ toastMessage }}
             </div>
         </div>
-    </script>
 
-    <!-- Load game scripts -->
-    <script src="/static/js/store.js"></script>
-    <script src="/static/js/vue-game.js"></script>
+        <!-- Loading indicator -->
+        <div v-else class="loading-indicator">
+            <h2>Loading game...</h2>
+        </div>
+    </div>
+
+    <!-- Simplified game script -->
+    <script src="/static/js/vuex-game.js"></script>
 </body>
 </html>
