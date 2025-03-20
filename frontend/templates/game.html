@@ -6,10 +6,16 @@
     <title>Game - Browser Based Game</title>
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/game.css">
+
     <!-- Vue 3 -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <!-- Pinia -->
-    <script src="https://unpkg.com/pinia@2/dist/pinia.iife.js"></script>
+    <script src="https://unpkg.com/vue@3.2.47/dist/vue.global.js"></script>
+
+    <!-- VueDemi (required for Pinia) -->
+    <script src="https://unpkg.com/vue-demi@0.13.11/lib/index.iife.js"></script>
+
+    <!-- Pinia with correct version -->
+    <script src="https://unpkg.com/pinia@2.0.33/dist/pinia.iife.js"></script>
+
     <!-- Socket.IO client library -->
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
 </head>
@@ -196,6 +202,7 @@
         </div>
     </script>
 
+    <!-- Load game scripts -->
     <script src="/static/js/store.js"></script>
     <script src="/static/js/vue-game.js"></script>
 </body>
