@@ -98,14 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Helper to show error messages
+    // Helper to show error messages - updated for Bootstrap 5
     function showError(message) {
         errorMessage.textContent = message;
-        errorMessage.classList.add('show');
-        
+        errorMessage.classList.remove('d-none');
+
         // Hide after 5 seconds
         setTimeout(() => {
-            errorMessage.classList.remove('show');
+            errorMessage.classList.add('d-none');
         }, 5000);
     }
 });
