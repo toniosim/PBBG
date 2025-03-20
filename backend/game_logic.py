@@ -172,10 +172,6 @@ def handle_move(character, direction):
         'inside_building': False
     }
     
-    result['character_updates']['stats'] = {
-        'ap': character['ap'] - 1
-    }
-    
     result['message'] = f'Moved {direction}'
     result['log_entry'] = f'Moved {direction} to ({new_x}, {new_y})'
     
