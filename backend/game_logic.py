@@ -144,12 +144,6 @@ def handle_move(character, direction):
         'log_entry': ''
     }
     
-    # Check if character has enough AP
-    if character['ap'] < 1:
-        result['success'] = False
-        result['message'] = 'Not enough AP to move'
-        return result
-    
     # Determine new position based on direction
     new_x, new_y = character['x'], character['y']
     
