@@ -5,16 +5,16 @@
 
 :root {
   /* Modern color palette - override Bootstrap variables */
-  --bs-primary: #3d5afe;
-  --bs-primary-rgb: 61, 90, 254;
-  --bs-secondary: #455a64;
+  --bs-primary: #3d5afe;         /* Main theme color */
+  --bs-primary-rgb: 61, 90, 254; /* RGB values of primary color */
+  --bs-secondary: #455a64;       /* Secondary/accent color */
   --bs-secondary-rgb: 69, 90, 100;
-  --bs-success: #00c853;
-  --bs-info: #00b0ff;
-  --bs-warning: #ffab00;
-  --bs-danger: #ff5252;
-  --bs-light: #f5f7fa;
-  --bs-dark: #263238;
+  --bs-success: #00c853;         /* Success state color */
+  --bs-info: #00b0ff;            /* Info state color */
+  --bs-warning: #ffab00;         /* Warning state color */
+  --bs-danger: #ff5252;          /* Error/danger state color */
+  --bs-light: #f5f7fa;           /* Background color */
+  --bs-dark: #263238;            /* Text color */
   
   /* Game-specific colors */
   --health-color: #ff5252;
