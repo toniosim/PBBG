@@ -4,108 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game - Browser Based Game</title>
-    <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="stylesheet" href="/static/css/game.css">
-
-    <!-- Load Vue first - using a stable version -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31"></script>
-
-    <!-- Load Vue Router (since we're going for a simpler approach) -->
-    <script src="https://cdn.jsdelivr.net/npm/vuex@4.0.2/dist/vuex.global.js"></script>
-
-    <!-- Socket.IO client library -->
-    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/custom.css">
+    <!-- Add Vue.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- Add Socket.IO client library -->
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
 </head>
 <body>
-    <div id="app">
-        <!-- The app will be mounted here -->
-        <div class="game-container" v-if="loaded">
-            <header class="game-header">
-                <div class="game-title">Browser Game</div>
-                <div class="user-controls">
-                    <span id="player-name">{{ character.name || 'Loading...' }}</span>
-                    <a href="/logout" class="logout-btn">Logout</a>
-                </div>
-            </header>
+    <div id="app" class="game-container">
+        <header class="game-header d-flex justify-content-between align-items-center">
+            <div class="fs-4 fw-bold">Browser Game</div>
+            <div class="d-flex align-items-center">
+                <span id="player-name" class="me-3">{{ character.name || 'Loading...' }}</span>
+                <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
+            </div>
+        </header>
 
-            <main class="game-content">
-                <div class="left-panel">
+        <main class="container-fluid py-3 flex-grow-1">
+            <div class="row h-100">
+                <div class="col-md-6 d-flex flex-column mb-3 mb-md-0">
                     <!-- Character Card -->
-                    <div class="card character-card">
-                        <div class="card-header">
-                            <h2>Character</h2>
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Character</h5>
                         </div>
                         <div class="card-body">
-                            <h3>{{ character.name }}</h3>
-                            <div class="stat-bar">
-                                <label>Health:</label>
-                                <div class="progress-container">
-                                    <div class="progress-bar health-bar" :style="{ width: healthPercent + '%' }"></div>
+                            <h5 class="card-title">{{ character.name }}</h5>
+                            <div class="mb-3">
+                                <label class="form-label d-flex justify-content-between">
+                                    <span>Health:</span>
                                     <span>{{ character.health }}/{{ character.max_health }}</span>
+                                </label>
+                                <div class="progress">
+                                    <div class="progress-bar health-bar" role="progressbar"
+                                         :style="{ width: healthPercent + '%' }"
+                                         :aria-valuenow="character.health"
+                                         :aria-valuemin="0"
+                                         :aria-valuemax="character.max_health"></div>
                                 </div>
                             </div>
-                            <div class="stat-bar">
-                                <label>MP:</label>
-                                <div class="progress-container">
-                                    <div class="progress-bar mp-bar" :style="{ width: mpPercent + '%' }"></div>
+                            <div class="mb-3">
+                                <label class="form-label d-flex justify-content-between">
+                                    <span>MP:</span>
                                     <span>{{ character.mp }}/{{ character.max_mp }}</span>
+                                </label>
+                                <div class="progress">
+                                    <div class="progress-bar mp-bar" role="progressbar"
+                                         :style="{ width: mpPercent + '%' }"
+                                         :aria-valuenow="character.mp"
+                                         :aria-valuemin="0"
+                                         :aria-valuemax="character.max_mp"></div>
                                 </div>
                             </div>
-                            <div class="stat-bar">
-                                <label>AP:</label>
-                                <div class="progress-container">
-                                    <div class="progress-bar ap-bar" :style="{ width: apPercent + '%' }"></div>
+                            <div class="mb-3">
+                                <label class="form-label d-flex justify-content-between">
+                                    <span>AP:</span>
                                     <span>{{ character.ap }}/{{ character.max_ap }}</span>
+                                </label>
+                                <div class="progress">
+                                    <div class="progress-bar ap-bar" role="progressbar"
+                                         :style="{ width: apPercent + '%' }"
+                                         :aria-valuenow="character.ap"
+                                         :aria-valuemin="0"
+                                         :aria-valuemax="character.max_ap"></div>
                                 </div>
                             </div>
-                            <div class="stat">
-                                <label>Experience:</label>
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-medium">Experience:</span>
                                 <span>{{ character.experience }}</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Location Card -->
-                    <div class="card location-card">
-                        <div class="card-header">
-                            <h2>Location</h2>
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Location</h5>
                         </div>
                         <div class="card-body">
-                            <h3>{{ location.name || 'Unknown' }}</h3>
+                            <h5 class="card-title">{{ location.name || 'Unknown' }}</h5>
                             <p>{{ location.description || 'Loading location information...' }}</p>
-                            <div v-if="location.inside_building" class="building-info">
-                                <div class="building-indicator">Inside Building</div>
+                            <div v-if="location.inside_building" class="mt-3">
+                                <span class="building-indicator">Inside Building</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Actions Card -->
-                    <div class="card actions-card">
-                        <div class="card-header">
-                            <h2>Actions</h2>
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Actions</h5>
                         </div>
                         <div class="card-body">
-                            <div class="actions-container">
+                            <div class="d-grid gap-2">
                                 <button
                                     v-for="action in availableActions"
                                     :key="action.type"
-                                    class="action-button"
+                                    class="btn btn-outline-primary"
                                     :disabled="!canPerformAction(action.type)"
                                     @click="handleAction(action)"
                                 >
                                     {{ action.name }}
                                 </button>
-                                <p v-if="availableActions.length === 0">Loading available actions...</p>
+                                <p v-if="availableActions.length === 0" class="text-muted">Loading available actions...</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="right-panel">
+                <div class="col-md-6 d-flex flex-column">
                     <!-- Map Card -->
-                    <div class="card map-card">
-                        <div class="card-header">
-                            <h2>Map</h2>
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Map</h5>
                         </div>
                         <div class="card-body">
                             <div class="game-map">
@@ -113,7 +127,7 @@
                                     v-for="(tile, index) in mapTiles"
                                     :key="index"
                                     class="map-tile"
-                                    :class="{ current: tile.x === character.x && tile.y === character.y }"
+                                    :class="{ current: tile.x === currentX && tile.y === currentY }"
                                     @click="tileClick(tile)"
                                 >
                                     <div class="map-tile-name">({{ tile.x }}, {{ tile.y }})</div>
@@ -124,9 +138,9 @@
                     </div>
 
                     <!-- Log Card -->
-                    <div class="card log-card">
-                        <div class="card-header">
-                            <h2>Action Log</h2>
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Action Log</h5>
                         </div>
                         <div class="card-body">
                             <div class="log-container">
@@ -134,19 +148,23 @@
                                     <span class="log-time">{{ formatLogTime(log.created_at) }}</span>
                                     <span class="log-message">{{ log.message }}</span>
                                 </div>
-                                <p v-if="logs.length === 0">Welcome to the game!</p>
+                                <p v-if="logs.length === 0" class="text-muted">Welcome to the game!</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
+        </main>
 
-            <!-- Modal for action confirmation/options -->
-            <div class="modal" :class="{ show: showModal }">
+        <!-- Modal for action confirmation/options -->
+        <div class="modal fade" :class="{ show: showModal }" tabindex="-1"
+             :style="{ display: showModal ? 'block' : 'none' }"
+             :aria-modal="showModal ? 'true' : 'false'" :aria-hidden="!showModal ? 'true' : 'false'">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2>{{ modalTitle }}</h2>
-                        <span class="close-modal" @click="hideModal">&times;</span>
+                        <h5 class="modal-title">{{ modalTitle }}</h5>
+                        <button type="button" class="btn-close" @click="hideModal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <!-- Move Direction Buttons -->
@@ -162,7 +180,7 @@
                         </div>
 
                         <!-- Other action options -->
-                        <select v-else-if="modalOptions.length > 0" v-model="selectedOption">
+                        <select v-else-if="modalOptions.length > 0" v-model="selectedOption" class="form-select">
                             <option
                                 v-for="option in modalOptions"
                                 :key="option.value"
@@ -178,29 +196,26 @@
                     <div class="modal-footer">
                         <button
                             v-if="modalOptions.length === 0 || (modalOptions.length > 0 && modalActionType !== 'MOVE')"
-                            class="btn-primary"
+                            class="btn btn-primary"
                             @click="confirmAction"
                         >
                             Confirm
                         </button>
-                        <button class="btn-secondary" @click="hideModal">Cancel</button>
+                        <button class="btn btn-secondary" @click="hideModal">Cancel</button>
                     </div>
                 </div>
             </div>
-
-            <!-- Toast message -->
-            <div v-if="showToast" class="toast" :class="toastType">
-                {{ toastMessage }}
-            </div>
         </div>
+        <div class="modal-backdrop fade" :class="{ show: showModal }" :style="{ display: showModal ? 'block' : 'none' }"></div>
 
-        <!-- Loading indicator -->
-        <div v-else class="loading-indicator">
-            <h2>Loading game...</h2>
+        <!-- Toast message -->
+        <div v-if="showToast" class="toast" :class="toastType">
+            {{ toastMessage }}
         </div>
     </div>
 
-    <!-- Simplified game script -->
-    <script src="/static/js/vuex-game.js"></script>
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/vue-game.js"></script>
 </body>
 </html>
