@@ -2,7 +2,8 @@
  * Main Pinia store for the game
  */
 
-// Create the store with the Pinia createStore function
+// Create the store with the Pinia defineStore function
+// Using global variables since we're not using a module system
 const useGameStore = Pinia.defineStore('gameStore', {
     state: () => ({
         // Character data
@@ -85,6 +86,7 @@ const useGameStore = Pinia.defineStore('gameStore', {
          * Initialize the map grid
          */
         initializeMap() {
+            console.log("Initializing map...");
             this.mapTiles = [];
             for (let y = 0; y < this.mapSize; y++) {
                 for (let x = 0; x < this.mapSize; x++) {
